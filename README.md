@@ -11,20 +11,14 @@
 - Modular and reusable code design.
 
 ## Installation
-You can install the necessary dependencies using npm:
-
-```bash
-npm install @google-cloud/kms @noble/curves viem asn1js
-```
+Just clone and use as necessary, ill add an npm package when there is more functionality.
 
 ## Directory Structure
 ```
 src/
-  class/
-    index.ts
-    toViem.ts
   modules/
     gcpToViem.ts
+    toViem.ts
   utils/
     asn1.ts
     gcp.ts
@@ -33,66 +27,54 @@ src/
 
 ## Usage
 
-### Import the Module
-```typescript
-import { gcpToViem } from './modules/gcpToViem';
-```
-
-### Convert GCP Key Ring Credentials to Viem Account
-```typescript
-// Example usage
-const kmsClient = new KeyManagementServiceClient();
-const hsmKeyVersion = 'projects/YOUR_PROJECT/locations/YOUR_LOCATION/keyRings/YOUR_KEYRING/cryptoKeys/YOUR_KEY/cryptoKeyVersions/YOUR_KEY_VERSION';
-
-(async () => {
-  try {
-    const cloudDerivedAccount = await gcpToViem({ hsmKeyVersion, kmsClient });
-    console.log('Successfully created Viem account:', cloudDerivedAccount);
-  } catch (error) {
-    console.error('Error creating Viem account:', error);
-  }
-})();
-```
-
 ### Function Documentation
+
+*They pretty much do the same thing for right now, use toViem until I get around to adding additional methods*
+
 #### `gcpToViem`
 
 **Description**: Convert GCP Key Ring credentials to a Viem account.
 
 **Parameters**:
-- `param0`: An object containing the HSM key version and the optional KMS client.
-  - `hsmKeyVersion` (string): The HSM key version identifier.
+- `param0`: An object containing the cloud key and the optional loaded KMS client.
+  - `cloudKey` (string): The cloud key identifier.
   - `kmsClient` (KeyManagementServiceClient, optional): The KMS client.
 
 **Returns**: A Promise that resolves to a `CloudDerivedAccount`.
+---
+#### `toViem`
 
-### Example
-Here's an example of an implementation using the `gcpToViem` function:
+**Description**: Converts a cloud key (resource name) to a Viem-compatible Ethereum account.
+
+**Parameters**:
+- `cloudKey` (string): The resource name of the cloud key to convert.
+
+**Returns**: A Promise that resolves to a `CloudDerivedAccount` object which includes Ethereum account details derived from the GCP KMS.
+
+---
+### Example from `./src/index.ts`
+
+Here's a simple example located in `./src/index.ts`:
 
 ```typescript
-import { gcpToViem } from './modules/gcpToViem';
-import { KeyManagementServiceClient } from '@google-cloud/kms';
+const app = new Hono()
+// Identify the Key on the Key Ring to Use (Make sure to set this in the .env file)
+// Also make sure to provide Service Account JSON Keyfile in the .env file
+const cloudKey = process.env.RESOURCE_NAME as string
+// Create a Wallet Client
+const client = createWalletClient({
+  account: await toViem(cloudKey),
+  chain: mainnet,
+  transport: http(process.env.RPC_URL),
+}).extend(publicActions)
+// Test a Route
+app.get('/', async (c) => {
+  const chainId = await client.getChainId()
+  return c.text(`Account: ${client.account.address} ChainId: ${chainId}`)
+})
 
-const hsmKeyVersion = 'projects/YOUR_PROJECT/locations/YOUR_LOCATION/keyRings/YOUR_KEYRING/cryptoKeys/YOUR_KEY/cryptoKeyVersions/YOUR_KEY_VERSION';
+// Returns Account: 0x... ChainId: 1
 
-async function main() {
-  const kmsClient = new KeyManagementServiceClient();
-
-  try {
-    const cloudDerivedAccount = await gcpToViem({ hsmKeyVersion, kmsClient });
-
-    console.log('Ethereum Address:', cloudDerivedAccount.address);
-
-    // You can now use the derived account to sign messages, transactions, etc.
-    const message = 'Hello, Ethereum!';
-    const signedMessage = await cloudDerivedAccount.signMessage({ message });
-    console.log('Signed Message:', signedMessage);
-  } catch (error) {
-    console.error('Error creating Viem account:', error);
-  }
-}
-
-main();
 ```
 
 ## Contributing
