@@ -1,5 +1,3 @@
----
-
 # GCP Viem ETH Signer
 
 ## Overview
@@ -107,5 +105,3 @@ This project is licensed under the MIT License.
 - [Google Cloud KMS](https://cloud.google.com/kms)
 - [Viem](https://github.com/viem/viem)
 - [ASN1.js](https://github.com/PeculiarVentures/ASN1.js/)
-
----
