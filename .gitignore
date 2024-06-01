@@ -34,3 +34,4 @@ lerna-debug.log*
 
 # keys
 keys/*
+!keys/sampleKey.json
