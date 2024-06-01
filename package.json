@@ -1,0 +1,21 @@
+{
+  "name": "hono-gcp-viem-eth-signer",
+  "version": "0.0.0",
+  "license": "MIT",
+  "description": "Hono Example to Execute EVM Txns with creds stored in GCP",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@google-cloud/kms": "^4.4.0",
+    "@noble/curves": "^1.4.0",
+    "asn1js": "^3.0.5",
+    "hono": "^4.4.2",
+    "viem": "^2.13.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
