@@ -77,6 +77,18 @@ app.get('/', async (c) => {
 
 ```
 
+## Creating Resources on GCP
+
+### Create Keyring and Key on GCP
+1. Create a Keyring on (GCP)[https://console.cloud.google.com/security/kms/keyrings]
+2. Create a Key on the Keyring (HSM or Software is fine) just needs to be 'Elliptic Curve P-256 key SHA256 Digest'
+3. Once created click on the option dots and 'Copy Resource Name' to use in the .env file
+
+### Create Service Account with permissions
+1. Create a Service Account on (GCP)[https://console.cloud.google.com/iam-admin/serviceaccounts]
+2. Click on the Keys Tab once in the Service Account, add key and it will create a JSON Keyfile for the Service Account and save it to your project directory under keys (I wouldn't recommend pushing this key to production unless you know what your doing)
+3. Add the Service Account to the Keyring and give it the 'Cloud KMS CryptoKey Signer/Verifier' role (go back to where you copied resource name and there is a permissions tab)
+
 ## Contributing
 Contributions are welcome! If you'd like to contribute, please fork the repository, make your changes, and submit a pull request.
 
