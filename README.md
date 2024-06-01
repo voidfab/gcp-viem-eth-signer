@@ -41,7 +41,9 @@ src/
   - `kmsClient` (KeyManagementServiceClient, optional): The KMS client.
 
 **Returns**: A Promise that resolves to a `CloudDerivedAccount`.
+
 ---
+
 #### `toViem`
 
 **Description**: Converts a cloud key (resource name) to a Viem-compatible Ethereum account.
